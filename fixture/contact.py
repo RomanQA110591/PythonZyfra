@@ -7,7 +7,7 @@ class ContactHelper:
 
     def open_contact_page(self):
         wd = self.app.wd
-        wd.get("http://localhost/addressbook/addressbook/")
+        wd.get("http://localhost/addressbook/addressbook")
 
     def create(self, contact):
         wd = self.app.wd
@@ -68,7 +68,7 @@ class ContactHelper:
         self.open_contact_page()
         self.select_contact_by_index(index)
         # open modification form
-        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+        wd.find_elements_by_xpath("//img[@title='Edit']")[index].click()
         # fill contacts form
         self.fill_contact_form(new_contacts_data)
         # submit modification
@@ -93,9 +93,9 @@ class ContactHelper:
             self.open_contact_page()
             self.contact_cache = []
             for element in wd.find_elements_by_name("entry"):
-                cells = element.find_elements_by_css_selector("td.center")
-                firstname = cells.text
-                lastname = cells.text
-                id = cells.find_element_by_name("selected[]").get_attribute("value")
+                cells = element.find_elements_by_tag_name("td")
+                firstname = cells[2].text
+                lastname = cells[1].text
+                id = cells[0].find_element_by_tag_name("input").get_attribute("value")
                 self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id))
         return list(self.contact_cache)
