@@ -1,5 +1,6 @@
 from model.contact import Contact
 import re
+import time
 
 
 class ContactHelper:
@@ -57,6 +58,10 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_elements_by_name("selected[]")[index].click()
 
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_css_selector("input[value='%s']" % id).click()
+
     def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.open_contact_page()
@@ -64,6 +69,16 @@ class ContactHelper:
         # submit deletion
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to.alert.accept()
+        self.contact_cache = None
+
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.open_contact_page()
+        self.select_contact_by_id(id)
+        # submit deletion
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to.alert.accept()
+        self.open_contact_page()
         self.contact_cache = None
 
     def modify_first_contact(self):
@@ -78,6 +93,15 @@ class ContactHelper:
         # fill contacts form
         self.fill_contact_form(new_contacts_data)
         # submit modification
+        wd.find_element_by_name("update").click()
+        self.return_to_home_page()
+        self.contact_cache = None
+
+    def modify_contact_by_id(self, id, contact):
+        wd = self.app.wd
+        self.open_contact_page()
+        wd.find_element_by_css_selector("a[href='edit.php?id=%s']" % id).click()
+        self.fill_contact_form(contact)
         wd.find_element_by_name("update").click()
         self.return_to_home_page()
         self.contact_cache = None
@@ -138,3 +162,21 @@ class ContactHelper:
         work = re.search("W: (.*)", text).group(1)
         phone2 = re.search("P: (.*)", text).group(1)
         return Contact(home=home, mobile=mobile, work=work, phone2=phone2)
+
+    def add_contact_in_group(self, id, name):
+        wd = self.app.wd
+        self.open_contact_page()
+        wd.find_element_by_id(id).click()
+        wd.find_element_by_name("to_group").click()
+        wd.find_element_by_name("to_group").send_keys(name)
+        wd.find_element_by_name("add").click()
+        wd.find_element_by_link_text("home").click()
+
+    def delete_contact_in_group(self, id, name):
+        wd = self.app.wd
+        self.open_contact_page()
+        wd.find_element_by_name("group").click()
+        wd.find_element_by_name("group").send_keys(name)
+        wd.find_element_by_id(id).click()
+        wd.find_element_by_name("remove").click()
+        self.open_contact_page()
