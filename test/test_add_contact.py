@@ -15,16 +15,22 @@ def test_add_contact(app, db, json_contacts, check_ui):
                                                                      key=Contact.id_or_max)
 
 
-def test_add_contact_in_group(app, orm, db):
+def test_add_contact_in_group(app, orm, db, json_contacts):
+    contact = json_contacts
     if len(db.get_contact_list()) == 0:
-        app.contact.create(Contact(firstname="test"))
+        app.contact.create(contact)
     if len(db.get_group_list()) == 0:
         app.group.create(Group(name="test"))
     contacts = db.get_contact_list()
-    contact = random.choice(contacts)
+    contact0 = random.choice(contacts)
     groups = db.get_group_list()
     group = random.choice(groups)
-    app.contact.add_contact_in_group(contact.id, group.name)
+    if contact0.id not in group.name:
+        app.contact.add_contact_in_group(contact0.id, group.name)
+    else:
+        app.contact.delete_contact_in_group(contact0.id, group.name)
+        app.contact.add_contact_in_group(contact0.id, group.name)
     contacts_in_group = orm.get_contacts_in_group(group)
     print(contacts_in_group)
 
+    assert contact in contacts_in_group
