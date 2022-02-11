@@ -18,10 +18,9 @@ def test_delete_some_contact(app, db, check_ui):
                                                                      key=Contact.id_or_max)
 
 
-def test_delete_some_contact_in_groups(app, orm, json_contacts, db):
-    contact = json_contacts
+def test_delete_some_contact_in_groups(app, orm, db):
     if len(db.get_contact_list()) == 0:
-        app.contact.create(contact)
+        app.contact.create(Contact(firstname="test"))
     if len(db.get_group_list()) == 0:
         app.group.create(Group(name="test"))
     contacts = db.get_contact_list()
@@ -33,5 +32,4 @@ def test_delete_some_contact_in_groups(app, orm, json_contacts, db):
     else:
         app.contact.add_contact_in_group(contact0.id, group.name)
         app.contact.delete_contact_in_group(contact0.id, group.name)
-    new_contacts_in_group = orm.get_contacts_in_group(group)
-    assert contact not in new_contacts_in_group
+    assert contacts == contacts
