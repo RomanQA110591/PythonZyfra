@@ -9,10 +9,11 @@ toml
 wheel
 attrs
 pony
-pytest
+pytest==2.9.0
 pluggy
 iniconfig
 atomicwrites
+lxml
 urllib3
 greenlet
 contextvars
@@ -25,3 +26,5 @@ PyMySQL
 immutables
 zipp
 jsonpickle
+pytest-allure-adaptor
+lxml-4.6.2-cp36-cp36m-win_amd64.whl
