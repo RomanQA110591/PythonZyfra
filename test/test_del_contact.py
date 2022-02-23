@@ -33,4 +33,4 @@ def test_delete_some_contact_in_groups(app, orm, db):
         app.contact.add_contact_in_group(contact0.id, group.name)
         app.contact.delete_contact_in_group(contact0.id, group.name)
     new_contacts_in_group = orm.get_contacts_in_group(group)
-    assert Contact not in new_contacts_in_group
+    assert contact0 not in new_contacts_in_group

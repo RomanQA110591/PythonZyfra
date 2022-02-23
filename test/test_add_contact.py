@@ -30,4 +30,4 @@ def test_add_contact_in_group(app, orm, db):
         app.contact.delete_contact_in_group(contact0.id, group.name)
         app.contact.add_contact_in_group(contact0.id, group.name)
     contacts_in_group = orm.get_contacts_in_group(group)
-    assert Contact in contacts_in_group
+    assert contact0 in contacts_in_group
